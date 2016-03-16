@@ -21,7 +21,7 @@ W_y = theano.shared(np.random.uniform(size=(output_size, hidden_size), low=-.01,
 x = t.tensor3()
 y = t.tensor3()
 
-h0 = t.vector()
+h0 = t.matrix()
 
 lr = t.scalar()
 
@@ -48,7 +48,7 @@ train = theano.function([h0, x, y, lr], [error], updates={W_h: W_h - lr * gW_h, 
 #y_in = np.cumsum(x_in, axis=1)
 #print y_in
 #import pdb; pdb.set_trace()
-h0_in = np.zeros(shape=(len(x_vec), vocab['size']))
+h0_in = np.zeros(shape=(vocab['size'], x_vec.shape[2]))
 #print output(h0_in, x_in.transpose(), y_in.transpose())
 
 #net = RNN(4,4,4)
@@ -57,11 +57,12 @@ h0_in = np.zeros(shape=(len(x_vec), vocab['size']))
 
 # too much error, implement batching
 #
+#import pdb; pdb.set_trace()
 
 for i in range(5000):
-    idx = np.random.randint(len(x_vec)-3)
+    #idx = np.random.randint(len(x_vec)-3)
     lr = 0.01
     #print lr
-    print(train(h0_in, x_vec[idx:idx+3].transpose(), y_vec[idx:idx].transpose(), lr))
+    print(train(h0_in, x_vec, y_vec, lr))
 
 # Use trained model
