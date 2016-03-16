@@ -18,8 +18,8 @@ W_x = theano.shared(np.random.uniform(size=(hidden_size, input_size), low=-.01, 
 W_y = theano.shared(np.random.uniform(size=(output_size, hidden_size), low=-.01, high=.01))
 
 # Define Inputs
-x = t.matrix()
-y = t.matrix()
+x = t.tensor3()
+y = t.tensor3()
 
 h0 = t.vector()
 
@@ -48,7 +48,7 @@ train = theano.function([h0, x, y, lr], [error], updates={W_h: W_h - lr * gW_h, 
 #y_in = np.cumsum(x_in, axis=1)
 #print y_in
 #import pdb; pdb.set_trace()
-h0_in = np.zeros(vocab['size'])
+h0_in = np.zeros(shape=(len(x_vec), vocab['size']))
 #print output(h0_in, x_in.transpose(), y_in.transpose())
 
 #net = RNN(4,4,4)
@@ -62,6 +62,6 @@ for i in range(5000):
     idx = np.random.randint(len(x_vec)-3)
     lr = 0.01
     #print lr
-    print(train(h0_in, x_vec[idx:idx+3].transpose(), y_vec[idx:idx+3].transpose(), lr))
+    print(train(h0_in, x_vec[idx:idx+3].transpose(), y_vec[idx:idx].transpose(), lr))
 
 # Use trained model
