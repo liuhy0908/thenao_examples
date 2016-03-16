@@ -17,6 +17,10 @@ W_h = theano.shared(np.random.uniform(size=(hidden_size, hidden_size), low=-.01,
 W_x = theano.shared(np.random.uniform(size=(hidden_size, input_size), low=-.01, high=.01))
 W_y = theano.shared(np.random.uniform(size=(output_size, hidden_size), low=-.01, high=.01))
 
+# Add biases
+b_h=theano.shared(np.random.uniform(size=(hidden_size, x_vec.shape[2]), low=-.01, high=.01))
+b_y=theano.shared(np.random.uniform(size=(output_size, x_vec.shape[2]), low=-.01, high=.01))
+
 # Define Inputs
 x = t.tensor3()
 y = t.tensor3()
@@ -28,8 +32,8 @@ lr = t.scalar()
 def step(x_t, h_t_1, W_h, W_x, W_y):
     # Add breakpoint
 
-    h = t.tanh(theano.dot(W_h, h_t_1) + theano.dot(W_x, x_t))
-    y = theano.dot(W_y, h)
+    h = t.tanh(theano.dot(W_h, h_t_1) + theano.dot(W_x, x_t) + b_h)
+    y = theano.dot(W_y, h) + b_y
     return h, y
 
     #def predict(, x_vec):
@@ -38,11 +42,13 @@ def step(x_t, h_t_1, W_h, W_x, W_y):
 
 error = ((out - y)**2).sum()
 
-gW_h, gW_x, gW_y = t.grad(error, [W_h, W_x, W_y])
+gW_h, gW_x, gW_y, gb_h, gb_y = t.grad(error, [W_h, W_x, W_y, b_h, b_y])
 
 output = theano.function([h0, x, y], [out, error], on_unused_input='warn')
 
-train = theano.function([h0, x, y, lr], [error], updates={W_h: W_h - lr * gW_h, W_x: W_x - lr * gW_x, W_y: W_y - lr * gW_y})
+train = theano.function([h0, x, y, lr], [error], updates={W_h: W_h - lr * gW_h, W_x: W_x - lr * gW_x,
+    W_y: W_y - lr * gW_y, b_h: b_h - lr * gb_h, b_y: b_y - lr * gb_y})
+
 
 #x_in = np.array([[1,1,1],[2,2,2]])
 #y_in = np.cumsum(x_in, axis=1)
@@ -59,9 +65,9 @@ h0_in = np.zeros(shape=(vocab['size'], x_vec.shape[2]))
 #
 #import pdb; pdb.set_trace()
 
-for i in range(5000):
+for i in range(100000):
     #idx = np.random.randint(len(x_vec)-3)
-    lr = 0.01
+    lr = 0.0001
     #print lr
     print(train(h0_in, x_vec, y_vec, lr))
 
