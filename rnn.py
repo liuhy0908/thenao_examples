@@ -8,6 +8,7 @@ theano.config.optimizer = 'None'
 epsilon = 0.01
 gamma = 0.1
 
+batch_size = 32
 hidden_size = 4
 input_size = output_size = vocab['size'];
 
@@ -22,12 +23,12 @@ W_x = theano.shared(np.random.uniform(size=(hidden_size, input_size), low=-.001,
 W_y = theano.shared(np.random.uniform(size=(output_size, hidden_size), low=-.001, high=.001))
 
 # Add biases
-b_h=theano.shared(np.random.uniform(size=(hidden_size, x_vec.shape[2]), low=-.001, high=.001))
-b_y=theano.shared(np.random.uniform(size=(output_size, x_vec.shape[2]), low=-.001, high=.001))
+b_h=theano.shared(np.random.uniform(size=(hidden_size, batch_size), low=-.001, high=.001))
+b_y=theano.shared(np.random.uniform(size=(output_size, batch_size), low=-.001, high=.001))
 
 # Adagrad parameters
 params = [W_h, W_x, W_y, b_h, b_y]
-param_shapes = [(hidden_size, hidden_size), (hidden_size, input_size), (output_size, hidden_size), (hidden_size, x_vec.shape[2]), (output_size, x_vec.shape[2])]
+param_shapes = [(hidden_size, hidden_size), (hidden_size, input_size), (output_size, hidden_size), (hidden_size, batch_size), (output_size, batch_size)]
 grad_hists = [theano.shared(np.zeros(shape=param_shape)) for param_shape, param in zip(param_shapes, params)]
 
 # Define Inputs
@@ -78,7 +79,7 @@ train = theano.function([h0, x, y], [error, out], updates=updates)
 #y_in = np.cumsum(x_in, axis=1)
 #print y_in
 #import pdb; pdb.set_trace()
-h0_in = np.zeros(shape=(hidden_size, x_vec.shape[2]))
+h0_in = np.zeros(shape=(hidden_size, batch_size))
 #print output(h0_in, x_in.transpose(), y_in.transpose())
 
 #net = RNN(4,4,4)
@@ -90,10 +91,12 @@ h0_in = np.zeros(shape=(hidden_size, x_vec.shape[2]))
 #import pdb; pdb.set_trace()
 
 for i in range(100000):
-    #idx = np.random.randint(len(x_vec)-3)
+    idx = np.random.randint(x_vec.shape[2]-batch_size)
     lr = 0.01
     #print lr
-    error, out = train(h0_in, x_vec, y_vec)
+    x_in = x_vec[:,:,idx:idx+batch_size]
+    y_in = y_vec[:,:,idx:idx+batch_size]
+    error, out = train(h0_in, x_in, y_in)
     print (error, i)
     #import pdb; pdb.set_trace()
 
