@@ -47,7 +47,7 @@ def step(x_t, h_t_1, W_h, W_x, W_y):
     y = (theano.dot(W_y, h) + b_y)
     e_y = t.exp(y - y.max(axis=0, keepdims=True))
     smax_y = e_y / e_y.sum(axis=0, keepdims=True)
-    return h, smax_y
+    return h, y
 
     #def predict(, x_vec):
         # return symbolic output of theano pass
