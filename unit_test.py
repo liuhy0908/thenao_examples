@@ -1,6 +1,6 @@
 import numpy as np
 
-def forward_pass():
+def test_forward_pass():
     #BATCH_SIZE = 1, N = 2, D = 3, V = 4, L = 4
     # Input vectors
     x1 = [[1,0,0,0],[0,0,0,0],[0,1,0,0],[0,0,1,0]]
@@ -15,7 +15,7 @@ def forward_pass():
     x = np.array([[x1,x2]])
     return x
 
-def backward_pass():
+def test_backward_pass():
     pass
 
 def accuracy():

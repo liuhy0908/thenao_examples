@@ -8,7 +8,7 @@ theano.config.optimizer = 'None'
 epsilon = 0.00000001
 gamma = 0.0001
 
-hidden_size = 8
+hidden_size = 100
 input_size = output_size = vocab['size'];
 
 # def generateSamples(predictFn, x):
@@ -64,7 +64,7 @@ error = ((out - y)**2).sum()
 # Implement adagrad and define symbolic updates which is a list of tuples
 param_grads = t.grad(error, params)
 
-new_grad_hists = [g_hist + g ** 2 for g_hist, g in zip(grad_hists, param_grads)]
+#new_grad_hists = [g_hist + g ** 2 for g_hist, g in zip(grad_hists, param_grads)]
 
 # param_updates = [
 #     (param, param - ((gamma * param_grad) / (t.sqrt(g_hist) + epsilon)))
@@ -75,9 +75,10 @@ param_updates = [
     (param, param - 0.0001*param_grad)
     for param, param_grad, g_hist in zip(params, param_grads, grad_hists)
 ]
+updates = param_updates
 
-grad_hist_update = zip(grad_hists, new_grad_hists)
-updates = grad_hist_update + param_updates
+#grad_hist_update = zip(grad_hists, new_grad_hists)
+#updates = grad_hist_update + param_updates
 
 # Calculate output and train functions
 output = theano.function([h0, x], out, on_unused_input='warn')
@@ -108,7 +109,7 @@ for i in range(100000):
     y_in = y_vec[:,:,idx]
     error, out = train(h0_in, x_in, y_in)
     if i%100==0:
-        print (error, i)
+        print (error, i, idx)
     #import pdb; pdb.set_trace()
     #in1 = x_in[:,:,0:1]
     #generateSamples(output, in1)
