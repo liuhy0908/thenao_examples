@@ -3,6 +3,7 @@ import theano
 from theano import tensor as t, printing
 from theano.tests.breakpoint import PdbBreakpoint
 from load_data import x_vec, y_vec, vocab
+from theano.gradient import grad_clip
 
 theano.config.optimizer = 'None'
 epsilon = 0.00000001
@@ -62,7 +63,9 @@ error = ((out - y)**2).sum()
 #error = t.nnet.categorical_crossentropy(out, y).sum()
 
 # Implement adagrad and define symbolic updates which is a list of tuples
-param_grads = t.grad(error, params)
+grads = t.grad(error, params)
+#param_grads = grads
+param_grads = [grad_clip(grad, -1, 1) for grad in grads]
 
 #new_grad_hists = [g_hist + g ** 2 for g_hist, g in zip(grad_hists, param_grads)]
 
@@ -71,8 +74,9 @@ param_grads = t.grad(error, params)
 #     for param, param_grad, g_hist in zip(params, param_grads, grad_hists)
 # ]
 
+# Iplemening gradient clipping here
 param_updates = [
-    (param, param - 0.0001*param_grad)
+    (param, param - 0.0001 * param_grad)
     for param, param_grad, g_hist in zip(params, param_grads, grad_hists)
 ]
 updates = param_updates
