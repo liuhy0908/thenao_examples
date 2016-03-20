@@ -59,8 +59,8 @@ def step(x_t, h_t_1, W_h, W_x, W_y):
         # return symbolic output of theano pass
 [h, out], _ = theano.scan(step, sequences=x, outputs_info=[h0, None], non_sequences=[W_h, W_x, W_y])
 
-error = ((out - y)**2).sum()
-#error = t.nnet.categorical_crossentropy(out, y).sum()
+#error = ((out - y)**2).sum()
+error = t.nnet.categorical_crossentropy(out, y).sum()
 
 # Implement adagrad and define symbolic updates which is a list of tuples
 grads = t.grad(error, params)
