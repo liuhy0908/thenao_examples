@@ -6,8 +6,7 @@ from load_data import x_vec, y_vec, vocab
 from theano.gradient import grad_clip
 
 theano.config.optimizer = 'None'
-epsilon = 0.00000001
-gamma = 0.0001
+gamma = 0.01
 
 hidden_size = 100
 input_size = output_size = vocab['size'];
@@ -35,7 +34,6 @@ b_y = theano.shared(np.zeros(shape=(output_size,)))
 # Adagrad parameters
 params = [W_h, W_x, W_y, b_h, b_y]
 param_shapes = [(hidden_size, hidden_size), (hidden_size, input_size), (output_size, hidden_size), (hidden_size,), (output_size, )]
-grad_hists = [theano.shared(np.zeros(shape=param_shape)) for param_shape, param in zip(param_shapes, params)]
 
 # Define Inputs
 x = t.matrix()
@@ -67,17 +65,17 @@ grads = t.grad(error, params)
 #param_grads = grads
 param_grads = [grad_clip(grad, -5, 5) for grad in grads]
 
-#new_grad_hists = [g_hist + g ** 2 for g_hist, g in zip(grad_hists, param_grads)]
+# new_grad_hists = [g_hist + g ** 2 for g_hist, g in zip(grad_hists, param_grads)]
 
 # param_updates = [
-#     (param, param - ((gamma * param_grad) / (t.sqrt(g_hist) + epsilon)))
+#     (param, param - gamma * param_grad/t.sqrt(g_hist + 1e-8))
 #     for param, param_grad, g_hist in zip(params, param_grads, grad_hists)
 # ]
 
-# Iplemening gradient clipping here
+#Iplemening gradient clipping here
 param_updates = [
     (param, param - 0.01 * param_grad)
-    for param, param_grad, g_hist in zip(params, param_grads, grad_hists)
+    for param, param_grad in zip(params, param_grads)
 ]
 updates = param_updates
 
