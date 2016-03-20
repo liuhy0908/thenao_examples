@@ -30,7 +30,7 @@ def encode_dataset(x, y, vocab):
 
     return x_vec, y_vec
 
-with open('data.txt') as fl:
+with open('data2.txt') as fl:
     text = fl.read().replace('\n',' ').replace('  ', ' ').replace(';',',').lower()
     data = [text[i:i+26] for i in range(0,len(text), 26)]
     data = [(line[:-1],line[1:]) for line in data]

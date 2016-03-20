@@ -53,7 +53,7 @@ def step(x_t, h_t_1, W_h, W_x, W_y):
     y = (theano.dot(W_y, h) + b_y)
     e_y = t.exp(y - y.max())
     smax_y = e_y / e_y.sum()
-    return h, y
+    return h, smax_y
 
     #def predict(, x_vec):
         # return symbolic output of theano pass
@@ -76,7 +76,7 @@ param_grads = [grad_clip(grad, -5, 5) for grad in grads]
 
 # Iplemening gradient clipping here
 param_updates = [
-    (param, param - 0.0001 * param_grad)
+    (param, param - 0.01 * param_grad)
     for param, param_grad, g_hist in zip(params, param_grads, grad_hists)
 ]
 updates = param_updates
@@ -104,9 +104,10 @@ h0_in = np.zeros(shape=(hidden_size,))
 # too much error, implement batching
 #
 #import pdb; pdb.set_trace()
+idx = 0
 
 for i in range(100000):
-    idx = np.random.randint(x_vec.shape[2])
+    #idx = np.random.randint(x_vec.shape[2])
     lr = 0.01
     #print lr
     x_in = x_vec[:,:,idx]
@@ -114,10 +115,15 @@ for i in range(100000):
     error, out, h0_in = train(h0_in, x_in, y_in)
     #import pdb; pdb.set_trace()
     if i%100==0:
+        # Also print out the input sentence here
         print (error, i, idx, h0_in.sum())
     #import pdb; pdb.set_trace()
     #in1 = x_in[:,:,0:1]
     #generateSamples(output, in1)
     #import pdb; pdb.set_trace()
-
+    # sweep from left ti right. otherwise this will be pretty random
+    idx = idx + 1
+    if idx == x_vec.shape[2]:
+        idx = 0
+        h0_in = np.zeros(shape=(hidden_size,))
 # Use trained model
