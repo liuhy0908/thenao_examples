@@ -65,7 +65,7 @@ error = ((out - y)**2).sum()
 # Implement adagrad and define symbolic updates which is a list of tuples
 grads = t.grad(error, params)
 #param_grads = grads
-param_grads = [grad_clip(grad, -1, 1) for grad in grads]
+param_grads = [grad_clip(grad, -5, 5) for grad in grads]
 
 #new_grad_hists = [g_hist + g ** 2 for g_hist, g in zip(grad_hists, param_grads)]
 
@@ -87,7 +87,7 @@ updates = param_updates
 # Calculate output and train functions
 output = theano.function([h0, x], out, on_unused_input='warn')
 
-train = theano.function([h0, x, y], [error, out], updates=updates)
+train = theano.function([h0, x, y], [error, out, h[-1]], updates=updates)
 
 
 #x_in = np.array([[1,1,1],[2,2,2]])
@@ -111,9 +111,10 @@ for i in range(100000):
     #print lr
     x_in = x_vec[:,:,idx]
     y_in = y_vec[:,:,idx]
-    error, out = train(h0_in, x_in, y_in)
+    error, out, h0_in = train(h0_in, x_in, y_in)
+    #import pdb; pdb.set_trace()
     if i%100==0:
-        print (error, i, idx)
+        print (error, i, idx, h0_in.sum())
     #import pdb; pdb.set_trace()
     #in1 = x_in[:,:,0:1]
     #generateSamples(output, in1)
