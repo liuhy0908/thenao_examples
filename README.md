@@ -9,3 +9,5 @@ Run python rnn.py. Datasets are included
 * Implement adagrad adpative learning algorithm
 
 ## Done:
+* Basic working rnn
+* Text output generation along with probabilities
