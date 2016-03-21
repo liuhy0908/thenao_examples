@@ -105,10 +105,10 @@ def sample(h_loc,x_loc):
   """
   ixes = []
   for t in xrange(25):
-    p = output(h_loc, x_loc)[-1]
+    p = output(h_loc, x_loc)
     ix = np.random.choice(range(vocab['size']), p=p.ravel())
     x_loc = np.zeros((vocab['size'], 1))
-    x_loc[ix] = 1
+    x_loc[:,ix] = 1
     ixes.append(ix)
   return ixes
 
