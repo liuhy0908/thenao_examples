@@ -2,7 +2,7 @@ import numpy as np
 import theano
 from theano import tensor as t, printing
 from theano.tests.breakpoint import PdbBreakpoint
-from load_data import x_vec, y_vec, vocab
+from load_data import x_vec, y_vec, vocab, matrix_to_text
 from theano.gradient import grad_clip
 
 theano.config.optimizer = 'None'
@@ -38,7 +38,6 @@ param_shapes = [(hidden_size, hidden_size), (hidden_size, input_size), (output_s
 # Define Inputs
 x = t.matrix()
 y = t.matrix()
-
 h0 = t.vector()
 
 lr = t.scalar()
@@ -99,6 +98,21 @@ h0_in = np.zeros(shape=(hidden_size,))
 #pred = net.predict(x)
 #main()
 
+def sample(h_loc,x_loc):
+  """
+  sample a sequence of integers from the model
+  h is memory state, seed_ix is seed letter for first time step
+  """
+  ixes = []
+  for t in xrange(25):
+    p = output(h_loc, x_loc)[-1]
+    ix = np.random.choice(range(vocab['size']), p=p.ravel())
+    x_loc = np.zeros((vocab['size'], 1))
+    x_loc[ix] = 1
+    ixes.append(ix)
+  return ixes
+
+
 # too much error, implement batching
 #
 #import pdb; pdb.set_trace()
@@ -115,6 +129,15 @@ for i in range(100000):
     if i%100==0:
         # Also print out the input sentence here
         print (error, i, idx, h0_in.sum())
+
+        # Run test code
+        hprev = np.zeros((hidden_size,))
+        k = np.random.randint(1000)
+        print "entering sample"
+        sample_ix = sample(hprev,x_vec[:,:,k])
+        txt = ''.join(vocab['decoder'][ix] for ix in sample_ix)
+        print '----\n %s \n----' % (txt, )
+
     #import pdb; pdb.set_trace()
     #in1 = x_in[:,:,0:1]
     #generateSamples(output, in1)
