@@ -5,7 +5,7 @@ from theano import tensor as t, printing
 from load_data import x_vec, y_vec, vocab, matrix_to_text
 from theano.gradient import grad_clip
 
-theano.config.optimizer = 'None'
+#theano.config.optimizer = 'None'
 gamma = 0.01
 
 hidden_size = 100
@@ -133,8 +133,7 @@ for i in range(100000):
         # Run test code
         hprev = np.zeros((hidden_size,))
         k = np.random.randint(x_vec.shape[2])
-        print "entering sample"
-        sample_ix = sample(hprev,np.reshape(x_vec[0,:,k],(1,vocab['size'])), 1000)
+        sample_ix = sample(hprev,np.reshape(x_vec[0,:,k],(1,vocab['size'])), 500)
         txt = ''.join(vocab['decoder'][np.argmax(ix)] for ix in sample_ix)
         print '----\n %s \n----' % (txt, )
 
