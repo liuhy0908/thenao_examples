@@ -2,10 +2,10 @@
 Character level rnn generator written from scratch in theano. Writes better drama than me at least.
 
 ## Running:
-Run python rnn.py. Dataset
+Run python rnn.py. Datasets are included
 
 ## Todo:
-* Implement Gated Recurrent Unit/LSTM and see how that
+* Implement Gated Recurrent Unit/LSTM and see how good of a text it generates
 * Implement adagrad adpative learning algorithm
 
 ## Done:
