@@ -82,7 +82,7 @@ updates = param_updates
 #updates = grad_hist_update + param_updates
 
 # Calculate output and train functions
-output = theano.function([h0, x], [out[1],h[1]], on_unused_input='warn')
+output = theano.function([h0, x], [out,h], on_unused_input='warn')
 
 train = theano.function([h0, x, y], [error, out, h[-1]], updates=updates)
 
@@ -133,7 +133,7 @@ for i in range(100000):
         hprev = np.zeros((hidden_size,))
         k = np.random.randint(3)
         print "entering sample"
-        sample_ix = sample(hprev,x_vec[:,:,k],20)
+        sample_ix = sample(hprev,x_vec[0,:,k],20)
         #txt = ''.join(vocab['decoder'][ix] for ix in sample_ix)
         #print '----\n %s \n----' % (txt, )
 
