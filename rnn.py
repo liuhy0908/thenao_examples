@@ -1,11 +1,11 @@
 import numpy as np
 import theano
 from theano import tensor as t, printing
-from theano.tests.breakpoint import PdbBreakpoint
+#from theano.tests.breakpoint import PdbBreakpoint
 from load_data import x_vec, y_vec, vocab, matrix_to_text
 from theano.gradient import grad_clip
 
-theano.config.optimizer = 'None'
+#theano.config.optimizer = 'None'
 gamma = 0.01
 
 hidden_size = 100
@@ -82,7 +82,7 @@ updates = param_updates
 #updates = grad_hist_update + param_updates
 
 # Calculate output and train functions
-output = theano.function([h0, x], out, on_unused_input='warn')
+output = theano.function([h0, x], [out,h], on_unused_input='warn')
 
 train = theano.function([h0, x, y], [error, out, h[-1]], updates=updates)
 
@@ -98,20 +98,20 @@ h0_in = np.zeros(shape=(hidden_size,))
 #pred = net.predict(x)
 #main()
 
-def sample(h_loc,x_loc):
+def sample(h_initial,x_seed,k):
   """
   sample a sequence of integers from the model
   h is memory state, seed_ix is seed letter for first time step
   """
-  ixes = []
-  for t in xrange(25):
-    p = output(h_loc, x_loc)
-    ix = np.random.choice(range(vocab['size']), p=p.ravel())
-    x_loc = np.zeros((vocab['size'], 1))
-    x_loc[:,ix] = 1
-    ixes.append(ix)
-  return ixes
-
+  gen_seq=[x_seed]
+  for i in range(k):
+    gen_prob,hidden= output(h_initial,x_seed)
+    h_initial = np.reshape(hidden,(hidden_size))
+    char_ix = np.random.choice(range(vocab['size']), p=gen_prob.ravel())
+    x_seed = np.zeros((1,vocab['size']))
+    x_seed[0,char_ix]=1
+    gen_seq.append(x_seed)
+  return gen_seq
 
 # too much error, implement batching
 #
@@ -132,10 +132,9 @@ for i in range(100000):
 
         # Run test code
         hprev = np.zeros((hidden_size,))
-        k = np.random.randint(1000)
-        print "entering sample"
-        sample_ix = sample(hprev,x_vec[:,:,k])
-        txt = ''.join(vocab['decoder'][ix] for ix in sample_ix)
+        k = np.random.randint(x_vec.shape[2])
+        sample_ix = sample(hprev,np.reshape(x_vec[0,:,k],(1,vocab['size'])), 500)
+        txt = ''.join(vocab['decoder'][np.argmax(ix)] for ix in sample_ix)
         print '----\n %s \n----' % (txt, )
 
     #import pdb; pdb.set_trace()

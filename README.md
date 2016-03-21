@@ -1,24 +1,11 @@
-Start error free code first
+# Char level rnn shakespeare generator
+Character level rnn generator written from scratch in theano. Writes better drama than me at least.
 
-Then implement it on array of tasks with a single task. See what happens to accuracy.
+## Running:
+Run python rnn.py. Datasets are included
 
-If accuracy increases, add different tasks
+## Todo:
+* Implement Gated Recurrent Unit/LSTM and see how good of a text it generates
+* Implement adagrad adpative learning algorithm
 
-If it doesn't try debugging
-
-It's really really easy. Just define variables and keep doing stuff with them. Finally calculate the resulstant.
-
-Derivative happens automatically
-
-Scan should take case of the batch_matmul hack
-
-Problem Breakdown:
-
-Also try word embedding from scratch. If that works you know word embedding.
-If word embedding is not working, problem found
-Otherwise debug rest of the code.
-Remove the stupid batch_matmul and replace that with Scan
-Check that it works with a batch. Since code is similar, results on a task should be the same.
-Keep calculating everything at each step for forward pass
-
-Start practicing test driven development?
+## Done:
