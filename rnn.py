@@ -103,14 +103,15 @@ def sample(h_initial,x_seed,k):
   sample a sequence of integers from the model
   h is memory state, seed_ix is seed letter for first time step
   """
-  gen_seq=[]
+  gen_seq=[x_seed]
   for i in range(k):
-    gen_prob,h_initial_= output(h_initial,x_seed)
-    
-    import pdb
-    pdb.set_trace()
-  return ixes
-  
+    gen_prob,hidden= output(h_initial,x_seed)
+    h_initial = np.reshape(hidden,(hidden_size))
+    char_ix = np.argmax(gen_prob)
+    x_seed = np.zeros((1,vocab['size']))
+    x_seed[0,char_ix]=1
+    gen_seq.append(x_seed)
+  return gen_seq
 
 # too much error, implement batching
 #
@@ -133,9 +134,9 @@ for i in range(100000):
         hprev = np.zeros((hidden_size,))
         k = np.random.randint(3)
         print "entering sample"
-        sample_ix = sample(hprev,x_vec[0,:,k],20)
-        #txt = ''.join(vocab['decoder'][ix] for ix in sample_ix)
-        #print '----\n %s \n----' % (txt, )
+        sample_ix = sample(hprev,np.reshape(x_vec[0,:,k],(1,vocab['size'])),20)
+        txt = ''.join(vocab['decoder'][np.argmax(ix)] for ix in sample_ix)
+        print '----\n %s \n----' % (txt, )
 
     #import pdb; pdb.set_trace()
     #in1 = x_in[:,:,0:1]
