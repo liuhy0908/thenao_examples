@@ -132,9 +132,9 @@ for i in range(100000):
 
         # Run test code
         hprev = np.zeros((hidden_size,))
-        k = np.random.randint(3)
+        k = np.random.randint(x_vec.shape[2])
         print "entering sample"
-        sample_ix = sample(hprev,np.reshape(x_vec[0,:,k],(1,vocab['size'])),20)
+        sample_ix = sample(hprev,np.reshape(x_vec[0,:,k],(1,vocab['size'])), 1000)
         txt = ''.join(vocab['decoder'][np.argmax(ix)] for ix in sample_ix)
         print '----\n %s \n----' % (txt, )
 
