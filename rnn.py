@@ -107,7 +107,7 @@ def sample(h_initial,x_seed,k):
   for i in range(k):
     gen_prob,hidden= output(h_initial,x_seed)
     h_initial = np.reshape(hidden,(hidden_size))
-    char_ix = np.argmax(gen_prob)
+    char_ix = np.random.choice(range(vocab['size']), p=gen_prob.ravel())
     x_seed = np.zeros((1,vocab['size']))
     x_seed[0,char_ix]=1
     gen_seq.append(x_seed)
