@@ -5,7 +5,7 @@ from theano import tensor as t, printing
 from load_data import x_vec, y_vec, vocab, matrix_to_text
 from theano.gradient import grad_clip
 
-#theano.config.optimizer = 'None'
+theano.config.optimizer = 'None'
 gamma = 0.01
 
 hidden_size = 100
@@ -33,7 +33,7 @@ b_y = theano.shared(np.zeros(shape=(output_size,)))
 
 # Adagrad parameters
 params = [W_h, W_x, W_y, b_h, b_y]
-param_shapes = [(hidden_size, hidden_size), (hidden_size, input_size), (output_size, hidden_size), (hidden_size,), (output_size, )]
+param_shapes = [param.shape for param in params]
 
 # Define Inputs
 x = t.matrix()
@@ -131,11 +131,11 @@ for i in range(100000):
         print (error, i, idx, h0_in.sum())
 
         # Run test code
-        hprev = np.zeros((hidden_size,))
-        k = np.random.randint(x_vec.shape[2])
-        sample_ix = sample(hprev,np.reshape(x_vec[0,:,k],(1,vocab['size'])), 500)
-        txt = ''.join(vocab['decoder'][np.argmax(ix)] for ix in sample_ix)
-        print '----\n %s \n----' % (txt, )
+        #hprev = np.zeros((hidden_size,))
+        #k = np.random.randint(x_vec.shape[2])
+        #sample_ix = sample(hprev,np.reshape(x_vec[0,:,k],(1,vocab['size'])), 500)
+        #txt = ''.join(vocab['decoder'][np.argmax(ix)] for ix in sample_ix)
+        #print '----\n %s \n----' % (txt, )
 
     #import pdb; pdb.set_trace()
     #in1 = x_in[:,:,0:1]

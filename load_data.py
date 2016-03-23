@@ -42,7 +42,7 @@ def encode_dataset(x, y, vocab):
         y_vec[:,:,i] = encode(y[i], vocab)
     return x_vec, y_vec
 
-with open('data/bible-kjv.txt') as fl:
+with open('data/data.txt') as fl:
     text = fl.read()
     data = [(text[i-1:i+batch_size-1], text[i:i+batch_size]) for i in range(1,len(text), batch_size)]
     #data = [(line[:-1],line[1:]) for line in data]
