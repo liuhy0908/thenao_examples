@@ -33,11 +33,12 @@ Lith no why, her comenit
 ```
 
 ## Todo:
-* Implement Gated Recurrent Unit/LSTM and see how good of a text it generates
+* Implement multi level Gated Recurrent Unit/LSTM and see how good of a text it generates
 * Implement adagrad adpative learning algorithm
 * Add plotting code
 * Add visualization code for theano network
 
 ## Done:
 * Basic working rnn
+* Working single layer gru with decent output
 * Text output generation along with probabilities
