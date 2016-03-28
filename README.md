@@ -5,6 +5,7 @@ Character level rnn generator written from scratch in theano. Writes better dram
 Run python rnn.py. Datasets are included
 
 ## Sample output from gru:
+```
 CLAGEECE:
 
 QAWARE EVWARD IV:
@@ -29,6 +30,7 @@ Kefy then spreak I lenere my miness.
 LADY GREY:
 To no maty souls HEnds it it star:
 Lith no why, her comenit
+```
 
 ## Todo:
 * Implement Gated Recurrent Unit/LSTM and see how good of a text it generates
